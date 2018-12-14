@@ -1,0 +1,53 @@
+{
+  "name": "coctx",
+  "version": "0.0.1",
+  "description": "continuation async context for node.js",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "scripts": {
+    "build": "webpack --hide-modules --config webpack.prod.js",
+    "dev": "webpack -w --hide-modules --config webpack.dev.js",
+    "test": "webpack --hide-modules --config webpack.prod.js && jest"
+  },
+  "husky": {
+    "hooks": {
+      "pre-push": "npm test"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/danwime/coctx.git"
+  },
+  "keywords": [
+    "context",
+    "threadlocal",
+    "node.js"
+  ],
+  "author": "李雨田 <demon@danwi.me>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/danwime/coctx/issues"
+  },
+  "homepage": "https://github.com/danwime/coctx#readme",
+  "devDependencies": {
+    "@babel/core": "^7.2.0",
+    "@babel/plugin-proposal-class-properties": "^7.2.1",
+    "@babel/plugin-proposal-decorators": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.15",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "babel-loader": "^8.0.4",
+    "clean-webpack-plugin": "^1.0.0",
+    "husky": "^1.2.1",
+    "jest": "^23.6.0",
+    "source-map-support": "^0.5.9",
+    "ts-loader": "^5.3.1",
+    "typescript": "^3.2.2",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2",
+    "webpack-merge": "^4.1.5",
+    "webpack-node-externals": "^1.7.2"
+  }
+}
