@@ -1,5 +1,5 @@
 {
-  "name": "coctx",
+  "name": "conctx",
   "version": "0.0.1",
   "description": "continuation async context for node.js",
   "main": "./dist/index.js",
@@ -19,7 +19,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/danwime/coctx.git"
+    "url": "git+ssh://git@github.com/danwime/conctx.git"
   },
   "keywords": [
     "context",
@@ -29,9 +29,9 @@
   "author": "李雨田 <demon@danwi.me>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/danwime/coctx/issues"
+    "url": "https://github.com/danwime/conctx/issues"
   },
-  "homepage": "https://github.com/danwime/coctx#readme",
+  "homepage": "https://github.com/danwime/conctx#readme",
   "devDependencies": {
     "@babel/core": "^7.2.0",
     "@babel/plugin-proposal-class-properties": "^7.2.1",

@@ -45,7 +45,7 @@ async_hooks.createHook({
 //异步上下文
 export class Context {
   constructor() {
-    const ctxKey = Symbol(`coctx:${Math.round(Math.random() * 1000)}`);
+    const ctxKey = Symbol(`conctx:${Math.round(Math.random() * 1000)}`);
     return Context.createProxy(this, ctxKey);
   }
 
