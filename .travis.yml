@@ -7,3 +7,13 @@ script:
   - set -e
   - npm run test
   - npm run build
+
+deploy:
+  skip_cleanup: true
+  provider: npm
+  email: demon@danwi.me
+  api_key:
+    secure: NBGkhRaDvxIZhmevKbA4VEpgx/XA+hEZyKxL0vRc/DH73GTUNu97biLQgP7rp6Bat43F3Hh+K0I3mU9n/z4BsPEoqZB6svjSUmHgIc59wfz6AJiFtoFgr0ejTxh4UMa3U3jhs8qjwJ0VpBQ0msk6JshZJgmb6Lk0quv22m49MGssElRM6NrrrxHcIFSkHcxxZEmzkoZmlRwfv+np47yRKuv9SXqjTc6lKMBX8mOGjZOp9qbclGqGmuqHSfyLgh0Pxyu4LhjTPMcHlr64gqhubq8SOVpqwkOF+6HC8iesBPx8Hu04nK2zcw3BD2VoUEJlgv5tjJ4x6LhiGteum3SJj5YJZMvg5nneRbSx4ctAV50mRcEPe6W2BaDtJ4BHztSeS3NIbHbadIIRIdP6FHSahRFcg3ci7SvhduFqpVMIASlTFkGun1mzLYBypkm5LdZhPfnphcGLj5szRb8zIJz0k3BP+PKGcICiP+BBDuvaGwTbtmlZRAzRoAwyuv5EVlzSvop97YoCFiK7XlNvO7bj/2skAAJCDpLaccEeDhX9hnPw3Tq01fAIp9CRqkuzTEptyyUQXK1q+c4O1WbLM1ofdNnTeQS4+i4ST5EOHssOAWNkPh8LWksVzTTTSpxp3Y8o+LbLgIwU8krHhOxiogR2dxVXT5GP6Plhym0c0IhKXHo=
+  on:
+    tags: true
+    repo: danwime/coctx
