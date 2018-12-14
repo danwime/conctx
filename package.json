@@ -1,6 +1,6 @@
 {
   "name": "conctx",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "continuation async context for node.js",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
