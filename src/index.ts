@@ -5,7 +5,7 @@ import * as fs from "fs";
 type AsyncNode = {
   asyncId: number,
   trigger?: AsyncNode,
-  contexts?: Map<Symbol, Map<PropertyKey, any>>
+  contexts?: WeakMap<Object, Map<PropertyKey, any>>
 };
 
 //所有的异步点集合
@@ -42,63 +42,86 @@ async_hooks.createHook({
   }
 }).enable();
 
-//异步上下文
-export class Context {
-  constructor() {
-    const ctxKey = Symbol(`conctx:${Math.round(Math.random() * 1000)}`);
-    return Context.createProxy(this, ctxKey);
-  }
+function createProxy(context) {
+  return new Proxy(context, {
+    get(target: any, key: PropertyKey, receiver: any): any {
+      if (target && target[key])
+        return target[key];
 
-  get size() {
-    return asyncNodes.size
-  }
-
-  get asyncPath() {
-    const paths = [];
-    let asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
-    while (asyncNode) {
-      paths.push(asyncNode.asyncId);
-      asyncNode = asyncNode.trigger;
-    }
-    return paths.reverse();
-  }
-
-  static createProxy(target, ctxKey) {
-    return new Proxy(target, {
-      get(target: any, key: PropertyKey, receiver: any): any {
-        if (target && target[key])
-          return target[key];
-
-        //获取对应的节点所对应的异步点
-        let asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
-        //从下至上遍历
-        while (asyncNode) {
-          if (asyncNode.contexts && asyncNode.contexts.get(ctxKey)) {
-            const values = asyncNode.contexts.get(ctxKey);
-            const value = values.get(key);
-            if (value)
-              return value;
-          }
-
-          asyncNode = asyncNode.trigger;
+      //获取对应的节点所对应的异步点
+      let asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
+      //从下至上遍历
+      while (asyncNode) {
+        if (asyncNode.contexts && asyncNode.contexts.get(context)) {
+          const values = asyncNode.contexts.get(context);
+          if (values.has(key))
+            return values.get(key);
         }
-      },
-      set(target: any, key: PropertyKey, value: any, receiver: any): boolean {
-        if (target && target[key])
-          return target[key] = value;
 
-        const asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
-        if (asyncNode) {
-          if (!asyncNode.contexts)
-            asyncNode.contexts = new Map<symbol, Map<PropertyKey, any>>();
-          if (!asyncNode.contexts.get(ctxKey))
-            asyncNode.contexts.set(ctxKey, new Map<PropertyKey, any>());
-
-          asyncNode.contexts.get(ctxKey).set(key, value);
-          return true;
-        } else
-          return false;
+        asyncNode = asyncNode.trigger;
       }
-    });
-  }
+    },
+    set(target: any, key: PropertyKey, value: any, receiver: any): boolean {
+      if (target && target[key])
+        return false;
+
+      const asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
+      if (asyncNode) {
+        if (!asyncNode.contexts)
+          asyncNode.contexts = new WeakMap<Object, Map<PropertyKey, any>>();
+        if (!asyncNode.contexts.get(context))
+          asyncNode.contexts.set(context, new Map<PropertyKey, any>());
+
+        asyncNode.contexts.get(context).set(key, value);
+        return true;
+      } else
+        return false;
+    }
+  });
+}
+
+function createAllProxy(context) {
+  return new Proxy({}, {
+    get(target: any, key: PropertyKey, receiver: any): any {
+      const result = [];
+      //获取对应的节点所对应的异步点
+      let asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
+      //从下至上遍历
+      while (asyncNode) {
+        if (asyncNode.contexts && asyncNode.contexts.get(context)) {
+          const values = asyncNode.contexts.get(context);
+          if (values.has(key))
+            result.push(values.get(key));
+        }
+
+        asyncNode = asyncNode.trigger;
+      }
+
+      return result;
+    },
+  });
+}
+
+//异步上下文
+export function createContext() {
+  const context: any = {
+    get size() {
+      return asyncNodes.size
+    },
+    get asyncPath() {
+      const paths = [];
+      let asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
+      while (asyncNode) {
+        paths.push(asyncNode.asyncId);
+        asyncNode = asyncNode.trigger;
+      }
+      return paths.reverse();
+    },
+    get asyncNode() {
+      return asyncNodes.get(async_hooks.executionAsyncId());
+    }
+  };
+
+  context.all = createAllProxy(context);
+  return createProxy(context);
 }
