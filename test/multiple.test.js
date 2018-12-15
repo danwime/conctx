@@ -5,15 +5,15 @@ let context = createContext();
 let context2 = createContext();
 
 beforeAll(() => {
-  context.value = 1;
-  context2.value = 'a';
+  context.current.value = 1;
+  context2.current.value = 'a';
 });
 
 test('多个context,获取值', async () => {
   const f1 = async function () {
     await sleep(10);
-    context.value = 2;
-    context2.value = 'b';
+    context.current.value = 2;
+    context2.current.value = 'b';
     await sleep(10);
     expect(context.value).toBe(2);
     expect(context2.value).toBe('b');
@@ -22,8 +22,8 @@ test('多个context,获取值', async () => {
 
   const f2 = async function () {
     await sleep(10);
-    context.value = 3;
-    context2.value = 'c';
+    context.current.value = 3;
+    context2.current.value = 'c';
     await sleep(10);
     expect(context.value).toBe(3);
     expect(context2.value).toBe('c');
@@ -39,8 +39,8 @@ test('多个context,获取值', async () => {
 test('多个context,并行流获取所有值测试', async () => {
   const f1 = async function () {
     await sleep(10);
-    context.value = 2;
-    context2.value = 'b';
+    context.current.value = 2;
+    context2.current.value = 'b';
     await sleep(10);
     expect(context.all.value).toEqual([2, 1]);
     expect(context2.all.value).toEqual(['b', 'a']);
@@ -49,8 +49,8 @@ test('多个context,并行流获取所有值测试', async () => {
 
   const f2 = async function () {
     await sleep(10);
-    context.value = 3;
-    context2.value = 'c';
+    context.current.value = 3;
+    context2.current.value = 'c';
     await sleep(10);
     expect(context.all.value).toEqual([3, 1]);
     expect(context2.all.value).toEqual(['c', 'a']);

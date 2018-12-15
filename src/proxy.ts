@@ -26,26 +26,24 @@ export function createProxy(context) {
       if (key in target)
         return false;
 
-      const asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
+      //获取对应的节点所对应的异步点
+      let asyncNode = asyncNodes.get(async_hooks.executionAsyncId());
+      //从下至上遍历,找到第一个有值的节点
+      while (asyncNode) {
+        if (asyncNode.contexts && asyncNode.contexts.get(context)) {
+          const values = asyncNode.contexts.get(context);
+          if (values.has(key)) {
+            if (value === undefined)
+              values.delete(key);
+            else
+              values.set(key, value);
 
-      if (!asyncNode.contexts) {
-        if (value === undefined)
-          return true;
+            return true
+          }
+        }
 
-        asyncNode.contexts = new WeakMap<Object, Map<PropertyKey, any>>();
+        asyncNode = asyncNode.trigger;
       }
-
-      if (!asyncNode.contexts.get(context)) {
-        if (value === undefined)
-          return true;
-
-        asyncNode.contexts.set(context, new Map<PropertyKey, any>());
-      }
-
-      if (value === undefined)
-        asyncNode.contexts.get(context).delete(key);  //如果是undefined,则删除对应的key
-      else
-        asyncNode.contexts.get(context).set(key, value);
 
       return true;
     }

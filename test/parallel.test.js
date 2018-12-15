@@ -4,13 +4,13 @@ import {createContext} from '../'
 let context = createContext();
 
 beforeAll(() => {
-  context.value = 1;
+  context.current.value = 1;
 });
 
 test('并行测试', async () => {
   const f1 = async function () {
     await sleep(10);
-    context.value = 2;
+    context.current.value = 2;
     await sleep(10);
     expect(context.value).toBe(2);
     return context.value;
@@ -18,7 +18,7 @@ test('并行测试', async () => {
 
   const f2 = async function () {
     await sleep(10);
-    context.value = 3;
+    context.current.value = 3;
     await sleep(10);
     expect(context.value).toBe(3);
     return context.value
@@ -32,7 +32,7 @@ test('并行测试', async () => {
 test('并行流获取所有值测试', async () => {
   const f1 = async function () {
     await sleep(10);
-    context.value = 2;
+    context.current.value = 2;
     await sleep(10);
     expect(context.all.value).toEqual([2, 1]);
     return context.all.value;
@@ -40,7 +40,7 @@ test('并行流获取所有值测试', async () => {
 
   const f2 = async function () {
     await sleep(10);
-    context.value = 3;
+    context.current.value = 3;
     await sleep(10);
     expect(context.all.value).toEqual([3, 1]);
     return context.all.value

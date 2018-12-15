@@ -3,7 +3,7 @@ import {createContext} from '../'
 let context = createContext();
 
 beforeAll(() => {
-  context.value = 1;
+  context.current.value = 1;
 });
 
 test('获取当前异步节点上下文的值', () => {
@@ -18,7 +18,7 @@ test('异步之后获取当前异步节点上下文的值', done => {
 });
 
 test('修改值异步之后获取当前异步节点上下文的值', done => {
-  context.value = 2;
+  context.current.value = 2;
   setTimeout(() => {
     expect(context.current.value).toBeUndefined();
     done();
@@ -26,10 +26,10 @@ test('修改值异步之后获取当前异步节点上下文的值', done => {
 });
 
 test('异步之后修改值,并获取当前异步节点上下文的值', done => {
-  context.value = 2;
+  context.current.value = 2;
   setTimeout(() => {
     expect(context.current.value).toBeUndefined();
-    context.value = 3;
+    context.current.value = 3;
     expect(context.current.value).toBe(3);
     done();
   }, 10)
