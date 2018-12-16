@@ -1,11 +1,19 @@
 import * as async_hooks from "async_hooks";
-import {asyncNodes} from "./node";
+import {AsyncNode, asyncNodes} from "./node";
 import {createProxy} from "./proxy";
 import {createAllProxy} from "./all-proxy";
 import {createCurrentProxy} from "./current-proxy";
 
+type Context = {
+  size: number,
+  asyncPath: number[],
+  asyncNode: AsyncNode,
+  all: any,
+  current: any
+} | any
+
 //创建异步上下文
-export function createContext() {
+export function createContext(): Context {
   const context: any = {
     get size() {
       return asyncNodes.size

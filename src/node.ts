@@ -1,6 +1,6 @@
 import * as async_hooks from "async_hooks";
 
-type AsyncNode = {
+export type AsyncNode = {
   asyncId: number,
   trigger?: AsyncNode,
   contexts?: WeakMap<Object, Map<PropertyKey, any>>
